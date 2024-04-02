@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Buidl Buddy",
-  description: "Find developers to pair program with",
+  description: "Coding Alone? Find developers to pair program with!",
 };
 
 export default function RootLayout({
