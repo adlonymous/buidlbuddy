@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Room } from "@/db/schema";
+import { getRooms } from "@/data-access/rooms";
 
 function RoomCard({ room }: { room: Room }) {
   return (
@@ -43,7 +44,7 @@ function RoomCard({ room }: { room: Room }) {
 }
 
 export default async function Home() {
-  const rooms = await db.query.room.findMany();
+  const rooms = await getRooms();
 
   return (
     <main className="min-h-screen p-24">
@@ -53,10 +54,11 @@ export default async function Home() {
           <Link href="/create-room">Create Room</Link>
         </Button>
       </div>
-
-      {rooms.map((room) => {
-        return <RoomCard key={room.id} room={room} />;
-      })}
+      <div className="grid grid-cols-3 gap-4">
+        {rooms.map((room) => {
+          return <RoomCard key={room.id} room={room} />;
+        })}
+      </div>
     </main>
   );
 }
