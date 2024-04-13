@@ -2,6 +2,8 @@ import { getRoom } from "@/data-access/rooms";
 import { Github } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { TagsList, splitTags } from "@/components/tags-list";
+import { BuidlBuddyVideo } from "./video-player";
 
 export default async function RoomPage(props: any) {
   const roomId = props.params.roomId;
@@ -12,13 +14,11 @@ export default async function RoomPage(props: any) {
     return <div>No room for this ID exists :(</div>;
   }
 
-  const tags = room.tags.split(",").map((tag) => tag.trim());
-
   return (
     <div className="grid grid-cols-4 min-h-screen">
       <div className="col-span-3 p-4 pr-2">
         <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
-          VIDEO PLAYER
+          <BuidlBuddyVideo room={room} />
         </div>
       </div>
       <div className="col-span-1 p-4 pl-2">
@@ -37,13 +37,14 @@ export default async function RoomPage(props: any) {
           )}
           <p className="text-base text-gray-600">{room?.description}</p>
           <h3>Tags:</h3>
-          <div className="flex gap-2 flex-wrap">
+          <TagsList tags={splitTags(room.tags)} />
+          {/* <div className="flex gap-2 flex-wrap">
             {tags.map((tag) => (
               <Badge className="w-fit" key={tag}>
                 {tag}
               </Badge>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
