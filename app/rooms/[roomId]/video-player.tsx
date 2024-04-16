@@ -1,9 +1,11 @@
 "use client";
+
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { Room } from "@/db/schema";
 import {
   Call,
   CallControls,
+  CallParticipantsList,
   SpeakerLayout,
   StreamCall,
   StreamTheme,
@@ -11,22 +13,20 @@ import {
   StreamVideoClient,
 } from "@stream-io/video-react-sdk";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { generateToken } from "./actions";
+import { useRouter } from "next/navigation";
 
 const apiKey = process.env.NEXT_PUBLIC_GET_STREAM_API_KEY!;
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZWRkOWU5MWQtOTU0My00YmRmLWFiYjItY2IwZTBkNGQ0YmMxIn0.A9MlGL-Q6UBQ342pLk9N9BAJqNP6fiPewxOeYhSrT9g";
 
 export function BuidlBuddyVideo({ room }: { room: Room }) {
   const session = useSession();
   const [client, setClient] = useState<StreamVideoClient | null>(null);
   const [call, setCall] = useState<Call | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!room) {
-      return;
-    }
+    if (!room) return;
     if (!session.data) {
       return;
     }
@@ -35,6 +35,8 @@ export function BuidlBuddyVideo({ room }: { room: Room }) {
       apiKey,
       user: {
         id: userId,
+        name: session.data.user.name ?? undefined,
+        image: session.data.user.image ?? undefined,
       },
       tokenProvider: () => generateToken(),
     });
@@ -58,7 +60,12 @@ export function BuidlBuddyVideo({ room }: { room: Room }) {
         <StreamTheme>
           <StreamCall call={call}>
             <SpeakerLayout />
-            <CallControls />
+            <CallControls
+              onLeave={() => {
+                router.push("/");
+              }}
+            />
+            <CallParticipantsList onClose={() => undefined} />
           </StreamCall>
         </StreamTheme>
       </StreamVideo>
