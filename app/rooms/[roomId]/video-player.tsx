@@ -12,6 +12,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { generateToken } from "./actions";
 
 const apiKey = process.env.NEXT_PUBLIC_GET_STREAM_API_KEY!;
 const token =
@@ -35,7 +36,7 @@ export function BuidlBuddyVideo({ room }: { room: Room }) {
       user: {
         id: userId,
       },
-      token,
+      tokenProvider: () => generateToken(),
     });
     const call = client.call("default", room.id);
     call.join({ create: true });
